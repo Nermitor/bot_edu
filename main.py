@@ -2,7 +2,7 @@ import asyncio  # Работа с асинхронностью
 
 from aiogram import Bot, Dispatcher
 from aiogram.filters import Command, Text  # Фильтр для /start, /...
-from aiogram.types import Message, InputFile  # Тип сообщения
+from aiogram.types import Message  # Тип сообщения
 
 from config import config  # Config
 
@@ -12,21 +12,19 @@ bot = Bot(token=API_TOKEN)
 dp = Dispatcher()  # Менеджер бота
 
 
-# dp.message - обработка сообщений
-# Command(commands=['start'] Фильтр для сообщений, берём только /start
-@dp.message(Command(commands=['start']))  # Берём только сообщения, являющиеся командой /start
-async def start_command(message: Message):  # message - сообщение, которое прошло через фильтр
-    await message.answer("Привет!")  # Отвечаем на полученное сообщение
+@dp.message(Command(commands=['start']))
+async def process_start_command(message: Message):
+    await message.answer('Привет')
 
 
-@dp.message(Text(text='1234')) # ловим текст "1234"
-async def easter_egg(message: Message):
-    await message.answer('Вы открыли пасхалку')
+@dp.message(Text(text='Ответь'))
+async def reply(message: Message):
+    await message.reply('Ответил')
 
 
-@dp.message()  # ловим все остальные сообщения
-async def echo(message: Message):
-    await message.answer(message.text)
+@dp.message()
+async def echo_all(message: Message):
+    await message.send_copy(message.chat.id)
 
 
 async def main():
